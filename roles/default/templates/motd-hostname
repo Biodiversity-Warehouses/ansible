@@ -1,0 +1,4 @@
+#!/bin/sh
+# {{ansible_managed}}
+figlet "{{ansible_hostname}}"
+echo "Welcome on {{inventory_hostname}}"

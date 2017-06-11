@@ -1,0 +1,8 @@
+- name: reload sshd
+  service: name=sshd state=reloaded
+
+- name: restart network
+  service: name=systemd-networkd state=restarted
+
+- name: reload daemon-reload
+  command: systemctl daemon-reload

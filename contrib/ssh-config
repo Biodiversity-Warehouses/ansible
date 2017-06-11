@@ -1,0 +1,93 @@
+
+Host bdw-nas.fk4.hs-bremen.de
+     Port 1512
+     User root
+
+###
+# neue systeme (sshkey-needed, no system users)
+
+Host atlassian.wirt.biodiv
+    HostName 172.18.0.13
+
+Host bamboo.wirt.biodiv
+    HostName 172.18.0.14
+
+Host geoserver.wirt.biodiv
+    HostName 172.18.0.15
+
+Host backend-prod.wirt.biodiv
+    HostName 172.18.0.12
+
+Host backend-test.wirt.biodiv
+    HostName 172.18.0.32
+
+Host webserver-prod.wirt.biodiv
+    HostName 172.18.0.11
+
+Host *.wirt.biodiv
+    ControlMaster          auto
+    ControlPath            ~/.ssh/mux-%r@%h:%p
+    ControlPersist         8h
+    TCPKeepAlive           yes
+    ProxyCommand           ssh -q -A wirt.biodiv nc %h %p
+    User                   root
+
+Host wirt.biodiv
+    User sshproxy
+    HostName 195.37.176.146
+
+###
+# Alt systeme
+
+Host geo.biodiv
+     HostName 195.37.176.158
+     Port 5822
+
+Host dev.biodiv
+     HostName 195.37.176.154
+     Port 6022
+
+Host saeugetiere.biodiv
+     HostName 195.37.176.158
+     Port 6122
+
+Host muscheln.biodiv
+     HostName 195.37.176.158
+     Port 6322
+
+Host db.biodiv
+     HostName 195.37.176.158
+     Port 6422
+
+Host tiles.biodiv
+     HostName 195.37.176.158
+     Port 6222
+
+Host bamboo.biodiv
+     HostName 195.37.176.158
+     Port 5922
+
+Host fische.biodiv
+     HostName 195.37.176.158
+     Port 6522
+
+Host atlassien.biodiv
+     HostName 195.37.176.146
+     User mmueller
+
+Host webserver.biodiv
+     HostName 195.37.176.157
+     User mmueller
+
+# offline
+Host webserver-old.biodiv
+     HostName 195.37.176.158
+     Port 7922
+
+# no-access / exists?
+Host db-dev.biodiv
+    HostName 195.37.176.158
+    Port 5522
+
+Host *.biodiv
+     User root

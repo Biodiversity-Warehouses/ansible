@@ -1,0 +1,3 @@
+---
+ssh_server_port: 22
+ipv4route: 172.18.0.1

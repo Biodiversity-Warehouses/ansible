@@ -1,0 +1,32 @@
+# {{ ansible_managed }}
+[Match]
+Name=e*
+
+{% if ipv4 is defined %}
+[Address]
+Address={{ipv4}}
+{% if ipv4.split("/")[1] is equalto "32" %}
+Peer={{ipv4route}}/32
+{% endif %}
+
+[Route]
+Gateway={{ipv4route}}
+{% else %}
+[Network]
+{% if ipv6 is defined %}
+DHCP=yes
+{% else %}
+DHCP=ipv4
+{% endif %}
+{% endif %}
+
+{% if ipv6 is defined %}
+[Network]
+Address={{ipv6}}
+Gateway={{ipv6route}}
+{% else %}
+{% if ipv4 is not defined %}
+[Network]
+DHCP=ipv6
+{% endif %}
+{% endif %}

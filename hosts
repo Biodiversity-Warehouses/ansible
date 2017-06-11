@@ -1,4 +1,13 @@
 [clients]
-#localhost
-#172.31.16.152
-ffhb.h.sum7.eu
+
+[vms]
+# ip address:172.18.0.x/24
+# prod: 11-30
+# test: 31-49
+# dhcp: 50-...
+webserver-prod.wirt.biodiv ipv4=172.18.0.11/24
+backend-prod.wirt.biodiv ipv4=172.18.0.12/24
+backend-test.wirt.biodiv ipv4=172.18.0.32/24
+atlassian.wirt.biodiv ipv4=172.18.0.13/24
+bamboo.wirt.biodiv ipv4=172.18.0.14/24
+geoserver.wirt.biodiv ipv4=172.18.0.15/24

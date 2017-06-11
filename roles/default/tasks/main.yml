@@ -1,0 +1,122 @@
+---
+- name: Install
+  apt: name={{item}} update_cache=yes
+  with_items:
+  - htop
+  - lsof
+  - bmon
+  - tcpdump
+  - mtr
+  - netcat-openbsd
+  - rsync
+  - zsh
+  - colordiff
+  - tmux
+  - tree
+  - git
+  - tig
+  - figlet
+  - vim
+  - pv
+# Ubuntu
+  - nano
+# Debian spiezifisch
+  - debian-goodies
+  - apt-transport-https
+  - unattended-upgrades
+  - molly-guard
+  - iptables-persistent
+  - curl
+  - deborphan
+
+  - binutils
+  - bsd-mailx
+  - bwm-ng
+  - postfix
+
+#  - zsh-syntax-highlighting
+#  - grml-zsh-config
+
+
+- name: Install grml-zsh-config manuell
+  get_url:
+    url: "http://git.grml.org/?p=grml-etc-core.git;a=blob_plain;f=etc/zsh/zshrc;hb=HEAD"
+    dest: /etc/zsh/zshrc
+    force: yes
+
+- name: Remove unneeded package
+  apt: name={{item}} state=absent autoremove=yes purge=yes
+  with_items:
+  - rsyslog
+  - cron
+  - anacron
+  - acpid
+  - rpcbind
+  - nfs-kernel-server
+  - nfs-common
+  - portmap
+
+
+- name: Update SSH configuration
+  replace: >
+    dest=/etc/ssh/sshd_config
+    regexp="^([\#\s]*)?{{item.key}}\s+([\w_-]+)"
+    replace="{{item.key}} {{item.value}}"
+    backup=yes
+  notify: reload sshd
+  with_items:
+  - key: PermitRootLogin
+    value: without-password
+  - key: PasswordAuthentication
+    value: 'no'
+  - key: ChallengeResponseAuthentication
+    value: 'no'
+  - key: PrintLastLog
+    value: 'yes'
+  - key: Port
+    value: "{{ ssh_server_port }}"
+
+- name: Enable sshd
+  service: name=sshd enabled=yes
+
+- name: Enable networkd
+  service: name=systemd-networkd enabled=yes
+
+- name: Configure Network
+  template: src=main.network dest=/etc/systemd/network/main.network owner=root mode=644
+  notify: restart network
+
+- name: Configure DNS
+  template: src=resolv.conf dest=/etc/resolv.conf owner=root mode=644
+
+- name: Disable networking
+  service: name=networking enabled=no
+
+- name: Copy configuration
+  template: src={{item.key}} dest={{ item.value }} owner=root mode=0644
+  with_items:
+  - key: vimrc
+    value: /etc/vimrc
+  - key: zshrc-root
+    value: /root/.zshrc
+  - key: tmux.conf
+    value: /etc/tmux.conf
+  - key: htoprc
+    value: /etc/htoprc
+
+- name: Change shell of user root
+  user: name=root shell=/bin/zsh
+
+- name: Generate ssh key for user root
+  user: name=root generate_ssh_key=yes ssh_key_type=ed25519  ssh_key_file=.ssh/id_ed25519 ssh_key_comment="{{inventory_hostname}}"
+
+- name: Generate motd
+  command: figlet "{{ansible_hostname}}"
+  register: result
+  changed_when: false
+
+- name: Set motd
+  template: src=motd-hostname dest=/etc/update-motd.d/99-hostname owner=root mode=0755
+
+- name: Enable sshd
+  service: name=sshd enabled=yes

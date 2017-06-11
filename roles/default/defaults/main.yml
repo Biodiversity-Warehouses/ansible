@@ -1,0 +1,3 @@
+---
+ssh_server_port: 22
+dns_resolve_first: 8.8.8.8
