@@ -86,9 +86,6 @@
   template: src=main.network dest=/etc/systemd/network/main.network owner=root mode=644
   notify: restart network
 
-- name: Configure DNS
-  template: src=resolv.conf dest=/etc/resolv.conf owner=root mode=644
-
 - name: Disable networking
   service: name=networking enabled=no
 

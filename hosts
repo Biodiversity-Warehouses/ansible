@@ -11,3 +11,9 @@ backend-test.wirt.biodiv ipv4=172.18.0.32/24
 atlassian.wirt.biodiv ipv4=172.18.0.13/24
 bamboo.wirt.biodiv ipv4=172.18.0.14/24
 geoserver.wirt.biodiv ipv4=172.18.0.15/24
+
+[webserver]
+webserver-prod.wirt.biodiv
+
+[backend-prod]
+backend-prod.wirt.biodiv

@@ -1,0 +1,8 @@
+[Unit]
+Description=Renew SSL Certs
+
+[Service]
+ExecStart=/usr/bin/certbot -c /etc/letsencrypt/cli.ini renew -q
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,22 @@
+---
+- name: Install dependencies
+  apt: name={{item}} state=present
+  with_items:
+    - nginx
+  notify: restart nginx
+
+- name: Generate DH
+  command: openssl dhparam -out dhparam.pem 4096 chdir=/etc/ssl/private/ creates=/etc/ssl/private/dhparam.pem
+  register: gen_dh
+
+- name: Change privileges DH
+  file: path=/etc/ssl/private/dhparam.pem mode=0400 owner=root group=root
+  when: gen_dh|skipped
+
+- name: Configure default server
+  template: src=nginx.conf dest=/etc/nginx/sites-available/default owner=root mode=644
+  notify: reload nginx
+
+
+- name: Enable service
+  service: name=nginx enabled=yes

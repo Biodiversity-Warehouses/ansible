@@ -30,3 +30,6 @@ Gateway={{ipv6route}}
 DHCP=ipv6
 {% endif %}
 {% endif %}
+
+[Network]
+DNS={{dns}}

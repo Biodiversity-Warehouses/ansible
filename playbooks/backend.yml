@@ -1,0 +1,4 @@
+---
+- hosts: backend-prod
+  roles:
+    - nodejs

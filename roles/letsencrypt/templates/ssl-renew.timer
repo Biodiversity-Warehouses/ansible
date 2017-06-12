@@ -1,0 +1,9 @@
+[Unit]
+Description=Renew SSL certs every two weeks
+
+[Timer]
+OnBootSec=15min
+OnUnitActiveSec=2week
+
+[Install]
+WantedBy=timers.target

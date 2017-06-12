@@ -1,0 +1,18 @@
+---
+- name: Install dependencies
+  apt: name={{item}} state=present
+  with_items:
+    - certbot
+
+- name: Default letsencrypt configuration
+  template: src=cli.ini dest=/etc/letsencrypt/cli.ini owner=root group=root mode=644
+
+- name: Copy ssl renew servies
+  template: src={{ item }} dest=/lib/systemd/system/{{ item }} owner=root mode=0644
+  notify: reload daemon-reload
+  with_items:
+  - ssl-renew.service
+  - ssl-renew.timer
+
+- name: Enable SSL renew service
+  service: name=ssl-renew.timer state=started enabled=yes
