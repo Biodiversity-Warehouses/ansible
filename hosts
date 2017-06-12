@@ -17,3 +17,8 @@ webserver-prod.wirt.biodiv
 
 [backend-prod]
 backend-prod.wirt.biodiv
+
+[backend]
+
+[backend:children]
+backend-prod
