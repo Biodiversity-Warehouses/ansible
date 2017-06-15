@@ -18,6 +18,9 @@ webserver-prod.wirt.biodiv
 [backend-prod]
 backend-prod.wirt.biodiv
 
+[atlassian]
+atlassian.wirt.biodiv
+
 [backend]
 
 [backend:children]

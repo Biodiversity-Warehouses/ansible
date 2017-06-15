@@ -1,0 +1,13 @@
+---
+- name: Create install directory
+  file: path=/opt/atlassian/confluence state=directory
+
+- name: Download confluence
+  unarchive: src="{{confluence_download}}"  dest=/tmp/ copy=no
+
+- name: Move confluence
+  synchronize: src="/tmp/atlassian-confluence-{{confluence_version}}"  dest=/opt/atlassian/confluence/
+  delegate_to: delegate.host
+
+- name: Clean temporary folder
+  file: path=/tmp/atlassian-confluence-{{confluence_version}} state=absent

@@ -1,0 +1,9 @@
+---
+- include: confluence.yml
+  when: "'atlassian' in group_names"
+
+- name: Proxy on webserver
+  include_role:
+    name: nginx
+    tasks_from: nginx-task-proxy-location
+  when: "'webserver' in group_names"

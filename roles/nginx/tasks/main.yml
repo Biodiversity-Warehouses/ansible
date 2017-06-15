@@ -13,9 +13,26 @@
   file: path=/etc/ssl/private/dhparam.pem mode=0400 owner=root group=root
   when: gen_dh|skipped
 
+- name: Remove files without ordernumber
+  file: path=/etc/nginx/sites-{{item}}/default state=absent
+  with_items:
+    - sites-available
+    - sites-enabled
+
 - name: Configure default server
-  template: src=nginx.conf dest=/etc/nginx/sites-available/default owner=root mode=644
+  template: src={{item.key}} dest=/etc/nginx/sites-available/{{item.value}} owner=root mode=644
+  with_items:
+    - key: nginx.conf
+      value: 00-default
+    - key: location.conf
+      value: 00-default-dir-00-default
   notify: reload nginx
+
+- name: Enable sites
+  file: src=/etc/nginx/sites-available/{{item}} dest=/etc/nginx/sites-enabled/{{item}} state=link
+  with_items:
+    - 00-default
+    - 00-default-dir-00-default
 
 
 - name: Enable service
