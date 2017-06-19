@@ -1,7 +1,4 @@
 ---
 - name: Configure proxy location
-  template: src=proxy-location.conf dest=/etc/nginx/sites-available/00-default-dir-50-{{nginx_location}} owner=root mode=644
+  template: src=proxy-location.conf dest=/etc/nginx/conf.d/00-default-dir-50-{{nginx_location}} owner=root mode=644
   notify: reload nginx
-
-- name: Enable location
-  file: src=/etc/nginx/sites-available/00-default-dir-50-{{nginx_location}} dest=/etc/nginx/sites-enabled/00-default-dir-50-{{nginx_location}} state=link

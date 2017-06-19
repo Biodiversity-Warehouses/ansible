@@ -6,4 +6,8 @@
   include_role:
     name: nginx
     tasks_from: nginx-task-proxy-location
+  vars:
+    nginx_location: confluence
+    nginx_location_ip: "{{ hostvars[ groups['atlassian'][0] ]['ansible_default_ipv4']['address'] }}"
+    nginx_location_port: 8090
   when: "'webserver' in group_names"

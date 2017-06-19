@@ -1,0 +1,6 @@
+---
+- name: restart confluence
+  service: name=confluence state=restarted
+
+- name: reload systemd
+  command: systemctl daemon-reload

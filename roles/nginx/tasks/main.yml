@@ -14,26 +14,20 @@
   when: gen_dh|skipped
 
 - name: Remove files without ordernumber
-  file: path=/etc/nginx/sites-{{item}}/default state=absent
+  file: path=/etc/nginx/{{item}}/default state=absent
   with_items:
     - sites-available
     - sites-enabled
 
 - name: Configure default server
-  template: src={{item.key}} dest=/etc/nginx/sites-available/{{item.value}} owner=root mode=644
-  with_items:
-    - key: nginx.conf
-      value: 00-default
-    - key: location.conf
-      value: 00-default-dir-00-default
+  template: src=nginx.conf dest=/etc/nginx/sites-available/00-default owner=root mode=644
   notify: reload nginx
 
 - name: Enable sites
-  file: src=/etc/nginx/sites-available/{{item}} dest=/etc/nginx/sites-enabled/{{item}} state=link
-  with_items:
-    - 00-default
-    - 00-default-dir-00-default
+  file: src=/etc/nginx/sites-available/00-default dest=/etc/nginx/sites-enabled/00-default state=link
 
+- name: Configure default server
+  template: src=location.conf dest=/etc/nginx/conf.d/00-default-dir-00-default owner=root mode=644
 
 - name: Enable service
   service: name=nginx enabled=yes

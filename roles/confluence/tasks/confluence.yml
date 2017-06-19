@@ -1,13 +1,39 @@
 ---
+- name: Install dependencies
+  apt: name=default-jre state=present
+
 - name: Create install directory
   file: path=/opt/atlassian/confluence state=directory
 
-- name: Download confluence
-  unarchive: src="{{confluence_download}}"  dest=/tmp/ copy=no
+#- name: Download confluence
+#  unarchive: src="{{confluence_download}}"  dest=/tmp/ copy=no
 
-- name: Move confluence
-  synchronize: src="/tmp/atlassian-confluence-{{confluence_version}}"  dest=/opt/atlassian/confluence/
-  delegate_to: delegate.host
+#- name: Move confluence
+#  synchronize: src="/tmp/atlassian-confluence-{{confluence_version}}/"  dest=/opt/atlassian/confluence
+#  delegate_to: "{{ inventory_hostname }}"
 
-- name: Clean temporary folder
-  file: path=/tmp/atlassian-confluence-{{confluence_version}} state=absent
+- name: Create user
+  user: name=confluence state=present system=yes
+
+- name: Fix permissions
+  file: dest=/opt/atlassian/confluence/{{item}} owner=confluence group=confluence mode=0775 recurse=yes
+  with_items:
+    - logs
+    - temp
+    - work
+
+- name: Configure URL
+  replace: path=/opt/atlassian/confluence/conf/server.xml regexp='<Context path=""' replace='<Context path="/confluence"' backup=yes
+  notify: restart confluence
+
+- name: Install system unit
+  template: src=confluence.service dest=/lib/systemd/system/confluence.service
+  notify:
+    - reload systemd
+    - restart confluence
+
+- name: Autostart confluence
+  service: name=confluence enabled=yes
+
+#- name: Clean temporary folder
+#  file: path=/tmp/atlassian-confluence-{{confluence_version}} state=absent
