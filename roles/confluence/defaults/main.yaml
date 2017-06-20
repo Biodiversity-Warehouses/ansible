@@ -1,5 +1,5 @@
 ---
 confluence_version: 6.2.1
 confluence_download: "https://www.atlassian.com/software/confluence/downloads/binary/atlassian-confluence-{{confluence_version}}.tar.gz"
-confluence_port: 8080
+confluence_port: 8090
 confluence_location: confluence

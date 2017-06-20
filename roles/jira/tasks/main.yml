@@ -1,5 +1,5 @@
 ---
-- include: confluence.yml
+- include: jira.yml
   when: "'atlassian' in group_names"
 
 - name: Proxy on webserver
@@ -7,7 +7,7 @@
     name: nginx
     tasks_from: nginx-task-proxy-location
   vars:
-    nginx_location: "{{confluence_location}}"
+    nginx_location: "{{jira_location}}"
     nginx_location_ip: "{{ hostvars[ groups['atlassian'][0] ]['ansible_default_ipv4']['address'] }}"
-    nginx_location_port: "{{confluence_port}}"
+    nginx_location_port: "{{jira_port}}"
   when: "'webserver' in group_names"

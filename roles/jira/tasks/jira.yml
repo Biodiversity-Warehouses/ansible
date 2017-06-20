@@ -1,0 +1,49 @@
+---
+- name: Install dependencies
+  apt: name=default-jre state=present
+
+- name: Create install directory
+  file: path=/opt/atlassian/jira state=directory
+
+- name: Download jira
+  unarchive: src="{{jira_download}}"  dest=/tmp/ copy=no
+
+- name: Move jira
+  synchronize: src="/tmp/atlassian-jira-{{jira_version}}-standalone/"  dest=/opt/atlassian/jira
+  delegate_to: "{{ inventory_hostname }}"
+
+- name: Create user
+  user: name=jira state=present system=yes
+
+- name: Fix permissions
+  file: dest=/opt/atlassian/jira/{{item}} owner=jira group=jira mode=0775
+  with_items:
+    - logs
+    - temp
+    - work
+
+- name: Configure URL
+  replace: path=/opt/atlassian/jira/conf/server.xml regexp='<Context path=""' replace='<Context path="/{{jira_location}}"' backup=yes
+  notify: restart jira
+
+- name: Create home directory
+  file: path=/opt/data/atlassian/jira state=directory owner=jira group=jira mode=0770
+
+- name: Configure Home
+  replace: dest=/opt/atlassian/jira/jira/WEB-INF/classes/jira-init.properties regexp="^([\#\s]*)?{{item.key}}=(.+)" replace="{{item.key}}={{item.value}}" backup=yes
+  with_items:
+  - key: jira.home
+    value: "/opt/data/atlassian/jira"
+  notify: restart jira
+
+- name: Install system unit
+  template: src=jira.service dest=/lib/systemd/system/jira.service
+  notify:
+    - reload systemd
+    - restart jira
+
+- name: Autostart jira
+  service: name=jira enabled=yes
+
+- name: Clean temporary folder
+  file: path=/tmp/atlassian-jira-{{jira_version}} state=absent

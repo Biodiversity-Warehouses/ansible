@@ -1,0 +1,5 @@
+---
+jira_version: 6.2.1
+jira_download: "https://www.atlassian.com/software/jira/downloads/binary/atlassian-jira-{{jira_version}}.tar.gz"
+jira_port: 8080
+jira_location: jira

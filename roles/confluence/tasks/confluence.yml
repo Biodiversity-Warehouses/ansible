@@ -5,25 +5,35 @@
 - name: Create install directory
   file: path=/opt/atlassian/confluence state=directory
 
-#- name: Download confluence
-#  unarchive: src="{{confluence_download}}"  dest=/tmp/ copy=no
+- name: Download confluence
+  unarchive: src="{{confluence_download}}"  dest=/tmp/ copy=no
 
-#- name: Move confluence
-#  synchronize: src="/tmp/atlassian-confluence-{{confluence_version}}/"  dest=/opt/atlassian/confluence
-#  delegate_to: "{{ inventory_hostname }}"
+- name: Move confluence
+  synchronize: src="/tmp/atlassian-confluence-{{confluence_version}}/"  dest=/opt/atlassian/confluence
+  delegate_to: "{{ inventory_hostname }}"
 
 - name: Create user
   user: name=confluence state=present system=yes
 
 - name: Fix permissions
-  file: dest=/opt/atlassian/confluence/{{item}} owner=confluence group=confluence mode=0775 recurse=yes
+  file: dest=/opt/atlassian/confluence/{{item}} owner=confluence group=confluence mode=0775
   with_items:
     - logs
     - temp
     - work
 
 - name: Configure URL
-  replace: path=/opt/atlassian/confluence/conf/server.xml regexp='<Context path=""' replace='<Context path="/confluence"' backup=yes
+  replace: path=/opt/atlassian/confluence/conf/server.xml regexp='<Context path=""' replace='<Context path="/{{confluence_location}}"' backup=yes
+  notify: restart confluence
+
+- name: Create home directory
+  file: path=/opt/data/atlassian/confluence state=directory owner=confluence group=confluence mode=0770
+
+- name: Configure Home
+  replace: dest=/opt/atlassian/confluence/confluence/WEB-INF/classes/confluence-init.properties regexp="^([\#\s]*)?{{item.key}}=(.+)" replace="{{item.key}}={{item.value}}" backup=yes
+  with_items:
+  - key: confluence.home
+    value: "/opt/data/atlassian/confluence"
   notify: restart confluence
 
 - name: Install system unit
@@ -35,5 +45,5 @@
 - name: Autostart confluence
   service: name=confluence enabled=yes
 
-#- name: Clean temporary folder
-#  file: path=/tmp/atlassian-confluence-{{confluence_version}} state=absent
+- name: Clean temporary folder
+  file: path=/tmp/atlassian-confluence-{{confluence_version}} state=absent

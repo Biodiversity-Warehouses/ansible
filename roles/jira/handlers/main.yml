@@ -1,0 +1,6 @@
+---
+- name: restart jira
+  service: name=jira state=restarted
+
+- name: reload systemd
+  command: systemctl daemon-reload
