@@ -1,7 +1,4 @@
 ---
-- name: Install dependencies
-  apt: name=default-jre state=present
-
 - name: Create install directory
   file: path=/opt/atlassian/confluence state=directory
 

@@ -1,0 +1,9 @@
+---
+- name: install ppa
+  apt: name="python-software-properties"
+
+- name: Add apt repository
+  apt_repository: repo='{{ java_repository_url }}'
+
+- name: Java Installer
+  apt: name="{{ java_package }}"

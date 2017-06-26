@@ -1,7 +1,4 @@
 ---
-- name: Install dependencies
-  apt: name=default-jre state=present
-
 - name: Create install directory
   file: path=/opt/atlassian/jira state=directory
 
@@ -21,6 +18,7 @@
     - logs
     - temp
     - work
+    - conf
 
 - name: Configure URL
   replace: path=/opt/atlassian/jira/conf/server.xml regexp='<Context path=""' replace='<Context path="/{{jira_location}}"' backup=yes
@@ -30,7 +28,7 @@
   file: path=/opt/data/atlassian/jira state=directory owner=jira group=jira mode=0770
 
 - name: Configure Home
-  replace: dest=/opt/atlassian/jira/jira/WEB-INF/classes/jira-init.properties regexp="^([\#\s]*)?{{item.key}}=(.+)" replace="{{item.key}}={{item.value}}" backup=yes
+  replace: dest=/opt/atlassian/jira/atlassian-jira/WEB-INF/classes/jira-application.properties regexp="^([\#\s]*)?{{item.key}}=(.+)" replace="{{item.key}}={{item.value}}" backup=yes
   with_items:
   - key: jira.home
     value: "/opt/data/atlassian/jira"

@@ -3,10 +3,10 @@ Description=jira Team Collaboration Software
 After=network.target
 
 [Service]
-Type=forking
+Type=simple
 User=jira
 PIDFile=/opt/atlassian/jira/work/catalina.pid
-ExecStart=/opt/atlassian/jira/bin/start-jira.sh
+ExecStart=/opt/atlassian/jira/bin/start-jira.sh -fg
 ExecStop=/opt/atlassian/jira/bin/stop-jira.sh
 
 [Install]

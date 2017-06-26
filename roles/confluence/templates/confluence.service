@@ -3,10 +3,10 @@ Description=Confluence Team Collaboration Software
 After=network.target
 
 [Service]
-Type=forking
+Type=simple
 User=confluence
 PIDFile=/opt/atlassian/confluence/work/catalina.pid
-ExecStart=/opt/atlassian/confluence/bin/start-confluence.sh
+ExecStart=/opt/atlassian/confluence/bin/start-confluence.sh -fg
 ExecStop=/opt/atlassian/confluence/bin/stop-confluence.sh
 
 [Install]
